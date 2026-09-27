@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness Challenge Tracker — Group Fitness Platform</title>
+  <meta name="description"
+    content="A modern, energetic fitness community platform for group challenges, daily progress tracking, live leaderboards, and progress analytics.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <div class="brand-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">PULSEFIT</span>
+            <span class="brand-tag">TRACKER</span>
+          </div>
+        </div>
+
+        <nav class="nav-menu" id="navMenu">
+          <button class="nav-link active" data-page="dashboard" id="tabDashboard">Dashboard</button>
+          <button class="nav-link" data-page="challenges" id="tabChallenges">Challenges</button>
+          <button class="nav-link" data-page="progress" id="tabProgress">My Progress</button>
+          <button class="nav-link" data-page="leaderboard" id="tabLeaderboard">Leaderboard</button>
+          <button class="nav-link" data-page="achievements" id="tabAchievements">Achievements</button>
+          <button class="nav-link" data-page="profile" id="tabProfile">Profile</button>
+          <button class="nav-link organizer-only" data-page="organizer-dash" id="tabOrganizerDash">Organizer
+            Console</button>
+        </nav>
+
+        <div class="nav-right">
+          <!-- Role Switcher -->
+          <div class="role-selector">
+            <select id="roleSelect" class="role-dropdown" title="Switch Role">
+              <option value="participant">Role: Participant (Shristi)</option>
+              <option value="organizer">Role: Organizer (Prof. Sharma)</option>
+            </select>
+          </div>
+
+          <!-- Notification Bell -->
+          <div class="notif-wrapper">
+            <button class="btn-icon-nav" id="notifBellBtn" aria-label="Notifications">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="notif-badge" id="notifBadge">4</span>
+            </button>
+
+            <!-- Notifications Dropdown -->
+            <div class="notif-dropdown hidden" id="notifDropdown">
+              <div class="notif-dropdown-header">
+                <span class="notif-dropdown-title">Notifications</span>
+                <button class="btn-text-sm" id="btnMarkNotifsRead">Mark all as read</button>
+              </div>
+              <div class="notif-list" id="notifList">
+                <div class="notif-item unread">
+                  <div class="notif-icon orange">🔥</div>
+                  <div class="notif-body">
+                    <p class="notif-text">You're on a 6-day streak!</p>
+                    <span class="notif-time">10 mins ago</span>
+                  </div>
+                </div>
+                <div class="notif-item unread">
+                  <div class="notif-icon green">🏆</div>
+                  <div class="notif-body">
+                    <p class="notif-text">You moved to #2 on the leaderboard</p>
+                    <span class="notif-time">2 hours ago</span>
+                  </div>
+                </div>
+                <div class="notif-item">
+                  <div class="notif-icon blue">🎯</div>
+                  <div class="notif-body">
+                    <p class="notif-text">You're 24 km away from your target goal</p>
+                    <span class="notif-time">5 hours ago</span>
+                  </div>
+                </div>
+                <div class="notif-item">
+                  <div class="notif-icon purple">👥</div>
+                  <div class="notif-body">
+                    <p class="notif-text">Aryan completed 5.2 km in Walking Challenge</p>
+                    <span class="notif-time">1 day ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Profile Avatar Nav -->
+          <div class="nav-user-profile" id="btnNavProfile">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+              alt="Shristi" class="nav-avatar">
+            <span class="nav-user-name">Shristi</span>
+          </div>
+
+          <!-- Mobile Nav Toggle -->
+          <button class="mobile-toggle" id="mobileNavToggle" aria-label="Toggle Navigation">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="content-container">
+
+        <!-- ============================================================
+             PAGE 1: COMMAND CENTER DASHBOARD
+             ============================================================ -->
+        <section class="page-section active" id="page-dashboard">
+          <!-- Greeting Banner -->
+          <div class="dashboard-greeting-bar">
+            <div>
+              <div class="greeting-badge">
+                <span class="pulse-dot"></span>
+                <span>COMMUNITY PLATFORM</span>
+              </div>
+              <h1 class="greeting-heading">Hey Shristi 👋</h1>
+              <p class="greeting-sub">Ready to beat yesterday's progress? You are currently ranked #2.</p>
+            </div>
+            <div class="greeting-date-pill">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span id="currentTodayDate">Sun, Sep 27, 2026</span>
+            </div>
+          </div>
+
+          <!-- Compact Daily Status Strip (4 Core Stat Pills) -->
+          <div class="daily-status-strip">
+            <div class="status-pill-card blue-pill">
+              <div class="pill-icon-wrap">🏃</div>
+              <div class="pill-data">
+                <span class="pill-label">Today's Progress</span>
+                <div class="pill-value-group">
+                  <span class="pill-number" id="dashProgressVal">76</span>
+                  <span class="pill-unit">/ 100 km</span>
+                </div>
+                <span class="pill-sub">76% complete</span>
+              </div>
+            </div>
+
+            <div class="status-pill-card orange-pill">
+              <div class="pill-icon-wrap">🔥</div>
+              <div class="pill-data">
+                <span class="pill-label">Current Streak</span>
+                <div class="pill-value-group">
+                  <span class="pill-number" id="dashStreakVal">6</span>
+                  <span class="pill-unit">days</span>
+                </div>
+                <span class="pill-sub">Keep it burning!</span>
+              </div>
+            </div>
+
+            <div class="status-pill-card green-pill">
+              <div class="pill-icon-wrap">🏆</div>
+              <div class="pill-data">
+                <span class="pill-label">Current Rank</span>
+                <div class="pill-value-group">
+                  <span class="pill-number" id="dashRankVal">#2</span>
+                  <span class="pill-unit">place</span>
+                </div>
+                <span class="pill-sub">Among 18 participants</span>
+              </div>
+            </div>
+
+            <div class="status-pill-card purple-pill">
+              <div class="pill-icon-wrap">🎯</div>
+              <div class="pill-data">
+                <span class="pill-label">Target Completion</span>
+                <div class="pill-value-group">
+                  <span class="pill-number" id="dashTargetPctVal">101%</span>
+                  <span class="pill-unit">pace</span>
+                </div>
+                <span class="pill-sub">Target achieved!</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Grid: Active Challenge + Today's Activity & Streak -->
+          <div class="dashboard-main-grid">
+            <!-- Left Col: Active Challenge Spotlight Card -->
+            <div class="active-challenge-card">
+              <div class="challenge-card-header">
+                <div class="challenge-badge-row">
+                  <span class="badge-tag green">Active Challenge</span>
+                  <span class="type-pill">🚶 Walking</span>
+                </div>
+                <span class="date-range-text">📅 12 Sep – 12 Oct</span>
+              </div>
+
+              <h2 class="active-challenge-title" id="dashActiveTitle">30-Day Walking Challenge</h2>
+
+              <div class="challenge-meta-strip">
+                <div class="meta-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                  </svg>
+                  <span>👥 18 participants</span>
+                </div>
+                <div class="meta-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 14 14"></polyline>
+                  </svg>
+                  <span>15 days remaining</span>
+                </div>
+              </div>
+
+              <!-- Main Progress Meter Bar -->
+              <div class="meter-block">
+                <div class="meter-label-row">
+                  <span class="meter-score"><strong>76</strong> / 100 km</span>
+                  <span class="meter-pct-badge">76%</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-fill" id="dashActiveMeterFill" style="width: 76%;"></div>
+                </div>
+                <div class="meter-footer-row">
+                  <span class="remaining-text">24 km remaining</span>
+                  <span class="motivational-callout" id="dashMotivationalMsg">“You're on track! Keep pushing!”</span>
+                </div>
+              </div>
+
+              <div class="challenge-action-row">
+                <button class="btn btn-emerald btn-lg" id="btnContinueChallenge">
+                  <span>Continue Challenge</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Col: Today's Activity & Streak Card -->
+            <div class="dashboard-side-col">
+              <!-- Today's Activity Card -->
+              <div class="card today-activity-card">
+                <div class="card-header-sm">
+                  <h3 class="card-title-sm">Today's Activity</h3>
+                  <span class="today-tag">Today</span>
+                </div>
+
+                <div class="today-stats-grid">
+                  <div class="today-stat-box">
+                    <span class="today-stat-icon">👟</span>
+                    <span class="today-stat-num">8,420</span>
+                    <span class="today-stat-lbl">Steps</span>
+                  </div>
+                  <div class="today-stat-box">
+                    <span class="today-stat-icon">📍</span>
+                    <span class="today-stat-num">6.4 km</span>
+                    <span class="today-stat-lbl">Distance</span>
+                  </div>
+                  <div class="today-stat-box">
+                    <span class="today-stat-icon">⏱️</span>
+                    <span class="today-stat-num">42 min</span>
+                    <span class="today-stat-lbl">Exercise</span>
+                  </div>
+                  <div class="today-stat-box">
+                    <span class="today-stat-icon">🎯</span>
+                    <span class="today-stat-num text-emerald">84%</span>
+                    <span class="today-stat-lbl">Daily Goal</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🔥 Streak Card -->
+              <div class="card streak-tracker-card">
+                <div class="card-header-sm">
+                  <div class="streak-title-wrap">
+                    <span class="streak-fire-icon">🔥</span>
+                    <h3 class="card-title-sm">Your Streak</h3>
+                  </div>
+                  <span class="streak-count-badge">6 Day Streak</span>
+                </div>
+
+                <!-- 7 Day Circles -->
+                <div class="streak-days-row">
+                  <div class="streak-day completed" title="Monday - Done">
+                    <span class="day-lbl">M</span>
+                    <span class="day-check">✓</span>
+                  </div>
+                  <div class="streak-day completed" title="Tuesday - Done">
+                    <span class="day-lbl">T</span>
+                    <span class="day-check">✓</span>
+                  </div>
+                  <div class="streak-day completed" title="Wednesday - Done">
+                    <span class="day-lbl">W</span>
+                    <span class="day-check">✓</span>
+                  </div>
+                  <div class="streak-day completed" title="Thursday - Done">
+                    <span class="day-lbl">T</span>
+                    <span class="day-check">✓</span>
+                  </div>
+                  <div class="streak-day completed" title="Friday - Done">
+                    <span class="day-lbl">F</span>
+                    <span class="day-check">✓</span>
+                  </div>
+                  <div class="streak-day completed" title="Saturday - Done">
+                    <span class="day-lbl">S</span>
+                    <span class="day-check">✓</span>
+                  </div>
+                  <div class="streak-day pending" title="Sunday - Pending">
+                    <span class="day-lbl">S</span>
+                    <span class="day-check">○</span>
+                  </div>
+                </div>
+
+                <p class="streak-hint">Keep going! One more day to reach 7-day milestone badge.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Grid: Social Activity Stream + Achievements Preview -->
+          <div class="dashboard-bottom-grid">
+            <!-- Social Activity Feed -->
+            <div class="card social-feed-card">
+              <div class="card-header-sm">
+                <div class="title-with-icon">
+                  <span class="section-icon">💬</span>
+                  <h3 class="card-title-sm">Challenge Activity Stream</h3>
+                </div>
+                <span class="feed-pulse">Live</span>
+              </div>
+
+              <div class="social-stream-list" id="socialStreamList">
+                <div class="stream-item">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80"
+                    class="stream-avatar" alt="Aryan">
+                  <div class="stream-content">
+                    <p class="stream-text"><strong>Aryan</strong> completed 5.2 km today</p>
+                    <span class="stream-time">10 mins ago</span>
+                  </div>
+                </div>
+
+                <div class="stream-item">
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80"
+                    class="stream-avatar" alt="Ibrahim">
+                  <div class="stream-content">
+                    <p class="stream-text"><strong>Ibrahim</strong> joined the Walking Challenge</p>
+                    <span class="stream-time">1 hour ago</span>
+                  </div>
+                </div>
+
+                <div class="stream-item">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80"
+                    class="stream-avatar" alt="Shristi">
+                  <div class="stream-content">
+                    <p class="stream-text"><strong>Shristi</strong> reached 75% of her target</p>
+                    <span class="stream-time">3 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="stream-item">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80"
+                    class="stream-avatar" alt="Aryan">
+                  <div class="stream-content">
+                    <p class="stream-text"><strong>Aryan</strong> moved to #1 on the Leaderboard</p>
+                    <span class="stream-time">5 hours ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Achievements Preview Widget -->
+            <div class="card achievements-widget-card">
+              <div class="card-header-sm">
+                <div class="title-with-icon">
+                  <span class="section-icon">🎖️</span>
+                  <h3 class="card-title-sm">Unlocked Badges</h3>
+                </div>
+                <button class="btn-text-sm" id="btnNavAllBadges">View All &rarr;</button>
+              </div>
+
+              <div class="badges-mini-grid">
+                <div class="badge-item unlocked" title="First Challenge Completed">
+                  <span class="badge-icon">🥇</span>
+                  <span class="badge-name">First Challenge</span>
+                </div>
+                <div class="badge-item unlocked" title="7 Days Continuous Streak">
+                  <span class="badge-icon">🔥</span>
+                  <span class="badge-name">7 Day Streak</span>
+                </div>
+                <div class="badge-item unlocked" title="Crossed 50 KM total distance">
+                  <span class="badge-icon">🚶</span>
+                  <span class="badge-name">50 KM Target</span>
+                </div>
+                <div class="badge-item locked" title="Reach 100% of challenge goal">
+                  <span class="badge-icon">🎯</span>
+                  <span class="badge-name">Target Crusher</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 2: DISCOVER & ALL CHALLENGES
+             ============================================================ -->
+        <section class="page-section" id="page-challenges">
+          <div class="section-header-row">
+            <div>
+              <h1 class="page-title">Discover Challenges</h1>
+              <p class="page-subtitle">Join community fitness challenges, track progress with friends, and reach targets
+                together.</p>
+            </div>
+            <button class="btn btn-emerald organizer-only" id="btnNavToCreateChallenge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Create Challenge +</span>
+            </button>
+          </div>
+
+          <!-- Category Filter Pills & Status Filter -->
+          <div class="catalog-filters-bar">
+            <div class="filter-pills-group" id="categoryFilterPills">
+              <button class="filter-pill active" data-cat="all">All Activities</button>
+              <button class="filter-pill" data-cat="Walking">🚶 Walking</button>
+              <button class="filter-pill" data-cat="Cycling">🚴 Cycling</button>
+              <button class="filter-pill" data-cat="Exercise minutes">⏱️ Exercise Minutes</button>
+            </div>
+
+            <div class="status-tabs-group" id="statusFilterPills">
+              <button class="status-tab active" data-status="all">All</button>
+              <button class="status-tab" data-status="joined">Joined</button>
+              <button class="status-tab" data-status="active">Active</button>
+              <button class="status-tab" data-status="upcoming">Upcoming</button>
+            </div>
+          </div>
+
+          <!-- Challenge Cards Grid -->
+          <div class="challenge-cards-grid" id="challengeCardsGrid">
+            <!-- Dynamically Populated -->
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 3: MY PROGRESS & ANALYTICS
+             ============================================================ -->
+        <section class="page-section" id="page-progress">
+          <div class="section-header-row">
+            <div>
+              <h1 class="page-title">My Progress & Daily Log</h1>
+              <p class="page-subtitle">Record today's entries and analyze your cumulative progress against the challenge
+                baseline.</p>
+            </div>
+          </div>
+
+          <div class="progress-split-grid">
+            <!-- Left: Log Today's Progress Form -->
+            <div class="card log-entry-card">
+              <div class="card-header-sm">
+                <h3 class="card-title-sm">Log Today's Progress</h3>
+                <span class="badge-tag green">Daily Entry</span>
+              </div>
+
+              <!-- Alert Messages -->
+              <div class="alert alert-error hidden" id="entryErrorAlert">
+                <span class="alert-icon">⚠️</span>
+                <span id="entryErrorMessage">Date outside challenge bounds</span>
+              </div>
+
+              <div class="alert alert-success hidden" id="entrySuccessAlert">
+                <span class="alert-icon">✓</span>
+                <span id="entrySuccessMessage">Progress successfully added! You've completed 76% of your target!</span>
+              </div>
+
+              <form id="formSubmitProgress" class="app-form">
+                <div class="form-group">
+                  <label for="progressChallengeSelect">Select Active Challenge *</label>
+                  <select id="progressChallengeSelect" class="form-select" required>
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="progressDate">Date *</label>
+                    <input type="date" id="progressDate" class="form-control" required>
+                    <span class="field-hint" id="progressDateHint">Inside challenge window</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="progressValue">Enter Distance / Value *</label>
+                    <div class="input-unit-group">
+                      <input type="number" id="progressValue" class="form-control" min="0.1" step="any"
+                        placeholder="e.g. 6.4" required>
+                      <span class="unit-addon" id="progressUnitLabel">km</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Increment Buttons -->
+                <div class="quick-buttons-row">
+                  <span class="quick-label">Quick Add:</span>
+                  <button type="button" class="btn-quick" data-add="1">+1 km</button>
+                  <button type="button" class="btn-quick" data-add="2">+2 km</button>
+                  <button type="button" class="btn-quick" data-add="5">+5 km</button>
+                </div>
+
+                <button type="submit" class="btn btn-emerald btn-block btn-lg" id="btnSubmitDailyProgress">
+                  <span>Submit Progress</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Right: Progress Analytics Chart (Cumulative Progress vs Target Line) -->
+            <div class="card analytics-chart-card">
+              <div class="chart-header-bar">
+                <div>
+                  <h3 class="card-title-sm">Your Progress vs Target</h3>
+                  <span class="chart-sub-text" id="chartChallengeSub">30-Day Walking Challenge</span>
+                </div>
+
+                <!-- Chart Filter Tabs -->
+                <div class="chart-period-tabs" id="chartPeriodTabs">
+                  <button class="period-tab active" data-period="30">30 Days</button>
+                  <button class="period-tab" data-period="7">7 Days</button>
+                  <button class="period-tab" data-period="all">Challenge</button>
+                </div>
+              </div>
+
+              <!-- SVG Interactive Line Chart -->
+              <div class="svg-chart-container" id="chartContainer">
+                <!-- SVG line chart injected via app.js -->
+              </div>
+
+              <!-- Below Chart Key Performance Indicators -->
+              <div class="chart-kpi-row">
+                <div class="kpi-box">
+                  <span class="kpi-label">Average Pace</span>
+                  <span class="kpi-val" id="kpiAvgPace">8.4 km/day</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Best Single Day</span>
+                  <span class="kpi-val text-emerald" id="kpiBestDay">12.7 km</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Total Cumulative</span>
+                  <span class="kpi-val text-blue" id="kpiTotalLogged">76 km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Table -->
+          <div class="card table-card">
+            <div class="card-header-sm">
+              <h3 class="card-title-sm">Submission Logs History</h3>
+              <span class="record-count" id="userHistoryCount">8 entries</span>
+            </div>
+            <div class="table-responsive">
+              <table class="app-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Challenge</th>
+                    <th>Distance / Reps</th>
+                    <th>Submitted At</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="userHistoryTbody">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 4: REAL-TIME LEADERBOARD
+             ============================================================ -->
+        <section class="page-section" id="page-leaderboard">
+          <div class="section-header-row">
+            <div>
+              <h1 class="page-title">Community Leaderboard</h1>
+              <p class="page-subtitle">Track real-time rankings and see how you stack up against group participants.</p>
+            </div>
+
+            <div class="leaderboard-filter-wrap">
+              <label for="leaderboardChallengeFilter" class="filter-lbl">Select Challenge:</label>
+              <select id="leaderboardChallengeFilter" class="form-select select-inline">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Leaderboard Period Tabs -->
+          <div class="card leaderboard-card">
+            <div class="leaderboard-tabs-bar">
+              <div class="lb-tabs" id="lbPeriodTabs">
+                <button class="lb-tab active" data-period="overall">Overall</button>
+                <button class="lb-tab" data-period="week">This Week</button>
+                <button class="lb-tab" data-period="today">Today</button>
+              </div>
+
+              <!-- Gap to #1 Callout Pill -->
+              <div class="gap-callout-pill" id="leaderboardGapCallout">
+                <span>⚡ You are <strong>8 km</strong> away from #1</span>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="app-table leaderboard-table">
+                <thead>
+                  <tr>
+                    <th style="width: 75px;">Rank</th>
+                    <th>Participant</th>
+                    <th>Cumulative Progress</th>
+                    <th>% Target</th>
+                    <th>Pace & Status</th>
+                  </tr>
+                </thead>
+                <tbody id="fullLeaderboardTbody">
+                  <!-- Strictly:
+                       #1 Aryan — 84 km — 112%
+                       #2 Shristi — 76 km — 101% (Highlighted)
+                       #3 Ibrahim — 69 km — 92%
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 5: ACHIEVEMENTS & GAMIFICATION
+             ============================================================ -->
+        <section class="page-section" id="page-achievements">
+          <div class="section-header-row">
+            <div>
+              <h1 class="page-title">Achievements & Milestones</h1>
+              <p class="page-subtitle">Earn badges as you hit distance goals, maintain daily streaks, and climb
+                rankings.</p>
+            </div>
+          </div>
+
+          <div class="achievements-full-grid" id="achievementsFullGrid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 6: USER PROFILE
+             ============================================================ -->
+        <section class="page-section" id="page-profile">
+          <div class="profile-hero-card card">
+            <div class="profile-main-row">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+                alt="Shristi" class="profile-lg-avatar">
+              <div class="profile-info">
+                <h1 class="profile-title-name">Shristi</h1>
+                <p class="profile-goal-text">“Reach 100km walking milestone & maintain top 3 group leaderboard status”
+                </p>
+                <div class="profile-chips">
+                  <span class="p-chip green">Participant</span>
+                  <span class="p-chip orange">🔥 6-Day Streak</span>
+                  <span class="p-chip blue">Rank #2</span>
+                </div>
+              </div>
+              <button class="btn btn-outline" id="btnEditProfile">Edit Profile</button>
+            </div>
+
+            <!-- Profile Metric Cards Grid -->
+            <div class="profile-stats-grid">
+              <div class="p-stat-box">
+                <span class="p-stat-lbl">Challenges Completed</span>
+                <span class="p-stat-num">3</span>
+              </div>
+              <div class="p-stat-box">
+                <span class="p-stat-lbl">Current Streak</span>
+                <span class="p-stat-num text-orange">6 Days</span>
+              </div>
+              <div class="p-stat-box">
+                <span class="p-stat-lbl">Total Distance</span>
+                <span class="p-stat-num text-emerald">240 km</span>
+              </div>
+              <div class="p-stat-box">
+                <span class="p-stat-lbl">Total Exercise Time</span>
+                <span class="p-stat-num text-blue">1,450 mins</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 7: ORGANIZER CONSOLE
+             ============================================================ -->
+        <section class="page-section" id="page-organizer-dash">
+          <div class="section-header-row">
+            <div>
+              <h1 class="page-title">Organizer Command Center</h1>
+              <p class="page-subtitle">Monitor group participation, create new challenges, and manage submissions.</p>
+            </div>
+            <button class="btn btn-emerald" id="btnOrganizerCreateChallenge">Create New Challenge +</button>
+          </div>
+
+          <!-- Organizer Metrics Strip -->
+          <div class="organizer-metrics-grid">
+            <div class="org-stat-card">
+              <span class="org-stat-lbl">Active Challenges</span>
+              <span class="org-stat-num">4</span>
+            </div>
+            <div class="org-stat-card">
+              <span class="org-stat-lbl">Total Participants</span>
+              <span class="org-stat-num text-blue">67</span>
+            </div>
+            <div class="org-stat-card">
+              <span class="org-stat-lbl">Entries Today</span>
+              <span class="org-stat-num text-emerald">42</span>
+            </div>
+            <div class="org-stat-card">
+              <span class="org-stat-lbl">Average Completion</span>
+              <span class="org-stat-num text-purple">78%</span>
+            </div>
+          </div>
+
+          <!-- Challenge Management Table -->
+          <div class="card table-card">
+            <div class="card-header-sm">
+              <h3 class="card-title-sm">Challenge Management Table</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="app-table">
+                <thead>
+                  <tr>
+                    <th>Challenge</th>
+                    <th>Participants</th>
+                    <th>Avg Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="organizerTableTbody">
+                  <!-- Dynamic Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PAGE 8: CREATE CHALLENGE FORM WITH LIVE PREVIEW (ORGANIZER)
+             ============================================================ -->
+        <section class="page-section" id="page-create-challenge">
+          <div class="section-header-row">
+            <div>
+              <h1 class="page-title">Create New Challenge</h1>
+              <p class="page-subtitle">Set up challenge goals, dates, and preview the live challenge card in real time.
+              </p>
+            </div>
+          </div>
+
+          <div class="create-challenge-split-grid">
+            <!-- Left: Form -->
+            <div class="card create-form-card">
+              <form id="formCreateChallenge" class="app-form">
+                <div class="form-group">
+                  <label for="createTitle">Challenge Name *</label>
+                  <input type="text" id="createTitle" class="form-control" value="Weekend Cycling Challenge"
+                    placeholder="e.g. 30-Day Walking Challenge" required>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="createType">Challenge Type *</label>
+                    <select id="createType" class="form-select" required>
+                      <option value="Walking">🚶 Walking</option>
+                      <option value="Cycling" selected>🚴 Cycling</option>
+                      <option value="Exercise minutes">⏱️ Exercise Minutes</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="createTarget">Target Value *</label>
+                    <input type="number" id="createTarget" class="form-control" min="1" value="60" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="createUnit">Unit *</label>
+                    <select id="createUnit" class="form-select" required>
+                      <option value="Kilometres" selected>Kilometres</option>
+                      <option value="Steps">Steps</option>
+                      <option value="Minutes">Minutes</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="createStartDate">Start Date *</label>
+                    <input type="date" id="createStartDate" class="form-control" value="2026-10-01" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="createEndDate">End Date *</label>
+                    <input type="date" id="createEndDate" class="form-control" value="2026-10-31" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="createParticipants">Add/Invite Participants</label>
+                  <input type="text" id="createParticipants" class="form-control"
+                    value="Aryan, Shristi, Ibrahim, Tanvi, Rahul" placeholder="Aryan, Shristi, Ibrahim">
+                </div>
+
+                <button type="submit" class="btn btn-emerald btn-lg btn-block" id="btnPublishChallenge">
+                  Publish Challenge
+                </button>
+              </form>
+            </div>
+
+            <!-- Right: Live Challenge Card Preview -->
+            <div class="live-preview-box">
+              <div class="preview-label-tag">LIVE CARD PREVIEW</div>
+
+              <div class="card active-challenge-card preview-card">
+                <div class="challenge-card-header">
+                  <div class="challenge-badge-row">
+                    <span class="badge-tag green">Upcoming</span>
+                    <span class="type-pill" id="previewTypePill">🚴 Cycling</span>
+                  </div>
+                  <span class="date-range-text" id="previewDatesText">📅 01 Oct – 31 Oct</span>
+                </div>
+
+                <h2 class="active-challenge-title" id="previewTitle">Weekend Cycling Challenge</h2>
+
+                <div class="challenge-meta-strip">
+                  <div class="meta-badge">
+                    <span>👥 <strong id="previewMemberCount">5</strong> participants</span>
+                  </div>
+                  <div class="meta-badge">
+                    <span>Target: <strong id="previewTargetText">60 Kilometres</strong></span>
+                  </div>
+                </div>
+
+                <div class="meter-block">
+                  <div class="meter-label-row">
+                    <span>Target Goal: <strong id="previewTargetGoal">60 Kilometres</strong></span>
+                    <span class="meter-pct-badge">0%</span>
+                  </div>
+                  <div class="meter-track">
+                    <div class="meter-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-container">
+        <span>Fitness Challenge Tracker &bull; Collaborative Community Platform</span>
+        <button class="btn-text-sm" id="btnResetData">Reset Sample Dataset</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notification Tray -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
